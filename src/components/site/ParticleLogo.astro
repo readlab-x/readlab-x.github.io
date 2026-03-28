@@ -1,0 +1,294 @@
+---
+interface Props {
+  align?: 'center' | 'top-left';
+  scale?: number;
+  class?: string;
+}
+
+const { align = 'center', scale = 1, class: className } = Astro.props as Props;
+---
+
+<div
+  class:list={['particle-logo', className]}
+  data-particle-logo
+  data-align={align}
+  data-scale={String(scale)}
+>
+  <canvas class="particle-logo__canvas" aria-hidden="true"></canvas>
+  <noscript>
+    <img class="particle-logo__fallback" src="/brand/logo-mark.png" alt="ReadLab X logo" />
+  </noscript>
+</div>
+
+<script>
+  type Particle = {
+    originX: number;
+    originY: number;
+    x: number;
+    y: number;
+    vx: number;
+    vy: number;
+    color: string;
+    glowColor: string;
+    alpha: number;
+    size: number;
+    seedX: number;
+    seedY: number;
+    drift: number;
+    phase: number;
+  };
+
+  class ParticleLogo {
+    root: HTMLElement;
+    canvas: HTMLCanvasElement;
+    ctx: CanvasRenderingContext2D | null;
+    image: HTMLImageElement;
+    particles: Particle[];
+    pointer: {
+      active: boolean;
+      x: number;
+      y: number;
+      radius: number;
+    };
+    frame: number;
+    resizeObserver: ResizeObserver;
+    align: 'center' | 'top-left';
+    scale: number;
+
+    constructor(root: HTMLElement) {
+      this.root = root;
+      const canvas = root.querySelector('canvas');
+
+      if (!(canvas instanceof HTMLCanvasElement)) {
+        throw new Error('ParticleLogo requires a canvas element.');
+      }
+
+      this.canvas = canvas;
+      this.ctx = this.canvas.getContext('2d');
+      this.align = root.dataset.align === 'top-left' ? 'top-left' : 'center';
+      this.scale = Number(root.dataset.scale || '1') || 1;
+      this.image = new Image();
+      this.image.src = '/brand/logo-mark.png';
+      this.particles = [];
+      this.pointer = {
+        active: false,
+        x: 0,
+        y: 0,
+        radius: 148
+      };
+      this.frame = 0;
+      this.resizeObserver = new ResizeObserver(() => this.setup());
+      this.handlePointerMove = this.handlePointerMove.bind(this);
+      this.animate = this.animate.bind(this);
+      this.image.onload = () => {
+        this.setup();
+        this.animate();
+      };
+
+      this.resizeObserver.observe(this.root);
+      window.addEventListener('pointermove', this.handlePointerMove, { passive: true });
+    }
+
+    setup() {
+      if (!this.ctx || !this.image.complete) return;
+
+      const rect = this.root.getBoundingClientRect();
+      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const width = Math.max(Math.floor(rect.width), 1);
+      const height = Math.max(Math.floor(rect.height), 1);
+
+      this.canvas.width = Math.floor(width * dpr);
+      this.canvas.height = Math.floor(height * dpr);
+      this.canvas.style.width = `${width}px`;
+      this.canvas.style.height = `${height}px`;
+      this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+
+      const inset = this.align === 'top-left' ? 0 : Math.min(width, height) * 0.12;
+      const maxDrawWidth = width - inset * 2;
+      const maxDrawHeight = height - inset * 2;
+      const imageRatio = this.image.width / this.image.height;
+      let drawWidth = maxDrawWidth;
+      let drawHeight = drawWidth / imageRatio;
+
+      if (drawHeight > maxDrawHeight) {
+        drawHeight = maxDrawHeight;
+        drawWidth = drawHeight * imageRatio;
+      }
+
+      drawWidth *= this.scale;
+      drawHeight *= this.scale;
+
+      const drawX = this.align === 'top-left' ? 0 : (width - drawWidth) / 2;
+      const drawY = this.align === 'top-left' ? 0 : (height - drawHeight) / 2;
+      const sampleCanvas = document.createElement('canvas');
+      const sampleContext = sampleCanvas.getContext('2d', { willReadFrequently: true });
+
+      if (!sampleContext) return;
+
+      sampleCanvas.width = width;
+      sampleCanvas.height = height;
+      sampleContext.clearRect(0, 0, width, height);
+      sampleContext.drawImage(this.image, drawX, drawY, drawWidth, drawHeight);
+
+      const imageData = sampleContext.getImageData(0, 0, width, height).data;
+      const spacing = width > 500 ? 4 : 5;
+      const particleSize = width > 500 ? 1.36 : 1.72;
+      const colorBoost = 1.12;
+      const particles = [];
+      const sampleAt = (px: number, py: number) => {
+        const clampedX = Math.max(0, Math.min(width - 1, Math.round(px)));
+        const clampedY = Math.max(0, Math.min(height - 1, Math.round(py)));
+        return (clampedY * width + clampedX) * 4;
+      };
+
+      for (let y = 0; y < height; y += spacing) {
+        for (let x = 0; x < width; x += spacing) {
+          const px = x;
+          const py = y;
+          const index = sampleAt(px, py);
+          const alpha = imageData[index + 3];
+
+          if (alpha > 96) {
+            const particleAlpha = 1;
+
+            const red = Math.min(Math.round(imageData[index] * colorBoost), 255);
+            const green = Math.min(Math.round(imageData[index + 1] * colorBoost), 255);
+            const blue = Math.min(Math.round(imageData[index + 2] * colorBoost), 255);
+
+            particles.push({
+              originX: px,
+              originY: py,
+              x: px,
+              y: py,
+              vx: 0,
+              vy: 0,
+              color: `rgb(${red}, ${green}, ${blue})`,
+              glowColor: `rgba(${red}, ${green}, ${blue}, 0.32)`,
+              alpha: particleAlpha,
+              size: particleSize,
+              seedX: Math.random() * 2 - 1,
+              seedY: Math.random() * 2 - 1,
+              drift: 0.2 + Math.random() * 0.35,
+              phase: Math.random() * Math.PI * 2
+            });
+          }
+        }
+      }
+
+      this.particles = particles;
+    }
+
+    handlePointerMove(event: PointerEvent) {
+      const rect = this.root.getBoundingClientRect();
+      const withinBounds =
+        event.clientX >= rect.left &&
+        event.clientX <= rect.right &&
+        event.clientY >= rect.top &&
+        event.clientY <= rect.bottom;
+
+      this.pointer.active = withinBounds;
+
+      if (withinBounds) {
+        this.pointer.x = event.clientX - rect.left;
+        this.pointer.y = event.clientY - rect.top;
+      }
+    }
+
+    animate() {
+      this.frame = window.requestAnimationFrame(this.animate);
+      if (!this.ctx) return;
+
+      const width = this.canvas.clientWidth;
+      const height = this.canvas.clientHeight;
+      this.ctx.clearRect(0, 0, width, height);
+
+      this.ctx.shadowBlur = 0;
+
+      for (const particle of this.particles) {
+        const t = performance.now() * 0.0015;
+        const pullX = (particle.originX - particle.x) * 0.028;
+        const pullY = (particle.originY - particle.y) * 0.028;
+        particle.vx += pullX;
+        particle.vy += pullY;
+
+        if (this.pointer.active) {
+          const dx = this.pointer.x - particle.x;
+          const dy = this.pointer.y - particle.y;
+          const distance = Math.hypot(dx, dy);
+
+          if (distance < this.pointer.radius) {
+            const force = (this.pointer.radius - distance) / this.pointer.radius;
+            const nx = distance > 0 ? dx / distance : 0;
+            const ny = distance > 0 ? dy / distance : 0;
+            const tangentX = -ny;
+            const tangentY = nx;
+            const waveA = Math.sin(t + particle.phase);
+            const waveB = Math.cos(t * 0.82 + particle.phase * 1.37);
+            const driftX = (particle.seedX * 0.22 + waveA * particle.drift) * force;
+            const driftY = (particle.seedY * 0.22 + waveB * particle.drift) * force;
+            const swirl = force * force * 0.22;
+            const lift = force * 0.08;
+
+            particle.vx += tangentX * swirl + driftX - nx * lift;
+            particle.vy += tangentY * swirl + driftY - ny * lift;
+          }
+        }
+
+        particle.vx *= 0.94;
+        particle.vy *= 0.94;
+        particle.x += particle.vx;
+        particle.y += particle.vy;
+
+        const displacement = Math.hypot(particle.x - particle.originX, particle.y - particle.originY);
+        const opacityDrop = Math.min(displacement / 42, 1) * 0.34;
+        const finalAlpha = particle.alpha * (1 - opacityDrop);
+        this.ctx.globalAlpha = finalAlpha;
+        this.ctx.fillStyle = particle.color;
+        this.ctx.beginPath();
+        this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        this.ctx.fill();
+      }
+
+      this.ctx.globalAlpha = 1;
+      this.ctx.shadowBlur = 14;
+
+      for (let index = 0; index < this.particles.length; index += 3) {
+        const particle = this.particles[index];
+        const displacement = Math.hypot(particle.x - particle.originX, particle.y - particle.originY);
+        if (displacement < 3.2) continue;
+
+        const displacementRatio = Math.min(displacement / 30, 1);
+        const glowAlpha = 0.12 + displacementRatio * 0.26;
+
+        if (glowAlpha <= 0.05) continue;
+
+        this.ctx.globalAlpha = glowAlpha;
+        this.ctx.shadowColor = particle.glowColor;
+        this.ctx.fillStyle = particle.color;
+        this.ctx.beginPath();
+        this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+        this.ctx.fill();
+      }
+
+      this.ctx.globalAlpha = 1;
+      this.ctx.shadowBlur = 0;
+    }
+
+    destroy() {
+      window.cancelAnimationFrame(this.frame);
+      this.resizeObserver.disconnect();
+      window.removeEventListener('pointermove', this.handlePointerMove);
+    }
+  }
+
+  const roots = document.querySelectorAll('[data-particle-logo]');
+  const instances = Array.from(roots, (root) => new ParticleLogo(root as HTMLElement));
+
+  window.addEventListener(
+    'pagehide',
+    () => {
+      instances.forEach((instance) => instance.destroy());
+    },
+    { once: true }
+  );
+</script>

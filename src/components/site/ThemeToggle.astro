@@ -1,0 +1,22 @@
+---
+const options = [
+  { value: 'light', label: 'Light', ariaLabel: 'Use light theme' },
+  { value: 'dark', label: 'Dark', ariaLabel: 'Use dark theme' },
+  { value: 'system', label: 'System', ariaLabel: 'Follow system theme' }
+] as const;
+---
+
+<div class="theme-toggle" role="group" aria-label="Theme selection">
+  {options.map((option) => (
+    <button
+      type="button"
+      class="theme-toggle__button"
+      data-theme-choice={option.value}
+      aria-pressed="false"
+      aria-label={option.ariaLabel}
+      title={option.ariaLabel}
+    >
+      {option.label}
+    </button>
+  ))}
+</div>

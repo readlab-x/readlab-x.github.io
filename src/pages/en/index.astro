@@ -1,0 +1,12 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import HomePage from '../../components/site/HomePage.astro';
+import { getHomeMessages } from '../../utils/i18n';
+
+const locale = 'en' as const;
+const messages = getHomeMessages(locale);
+---
+
+<BaseLayout locale={locale} title={messages.meta.title} description={messages.meta.description}>
+  <HomePage locale={locale} messages={messages} currentPath={Astro.url.pathname} />
+</BaseLayout>

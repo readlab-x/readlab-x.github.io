@@ -1,0 +1,42 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ButtonLink from '../../components/site/ButtonLink.astro';
+import Footer from '../../components/site/Footer.astro';
+import Header from '../../components/site/Header.astro';
+import SectionHeader from '../../components/site/SectionHeader.astro';
+import ProjectCard from '../../components/project/ProjectCard.astro';
+import { getProjectsPageContent } from '../../data/projects';
+
+const locale = 'en' as const;
+const page = getProjectsPageContent(locale);
+---
+
+<BaseLayout locale={locale} title={page.meta.title} description={page.meta.description}>
+  <main class="site-shell projects-shell">
+    <Header locale={locale} navItems={page.navItems} currentPath={Astro.url.pathname} />
+
+    <section class="section projects-intro">
+      <div class="projects-intro__copy">
+        <p class="eyebrow">{page.intro.eyebrow}</p>
+        <h1>{page.intro.title}</h1>
+        <p class="lede">{page.intro.copy}</p>
+      </div>
+      <div class="projects-intro__aside">
+        <p class="projects-intro__note">{page.intro.note}</p>
+        <ButtonLink href={page.intro.homeHref} variant="secondary">
+          {page.intro.homeLabel}
+        </ButtonLink>
+      </div>
+    </section>
+
+    <section class="section projects-section">
+      <SectionHeader eyebrow={page.intro.sectionEyebrow} title={page.intro.sectionTitle} />
+      <div class="projects-grid">
+        {page.projects.map((project) => (
+          <ProjectCard project={project} />
+        ))}
+      </div>
+    </section>
+  </main>
+  <Footer navItems={page.navItems} footer={page.footer} />
+</BaseLayout>

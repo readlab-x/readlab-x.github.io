@@ -1,0 +1,68 @@
+---
+import '../styles/global.css';
+import PageScrollbar from '../components/site/PageScrollbar.astro';
+import { themeBootstrapScript } from '../components/site/theme-script';
+import type { Locale } from '../i18n/config';
+import { defaultLocale, localeMeta } from '../i18n/config';
+import { buildSeoData } from '../utils/seo';
+
+interface Props {
+  title?: string;
+  description?: string;
+  locale?: Locale;
+}
+
+const {
+  title = 'ReadLab X | Knowledge tools for serious readers',
+  description = 'ReadLab X turns deep reading into a durable research workflow with tools for capture, synthesis, and structured knowledge.',
+  locale = defaultLocale
+} = Astro.props;
+
+const currentMeta = localeMeta[locale];
+const seo = buildSeoData({
+  title,
+  description,
+  locale,
+  pathname: Astro.url.pathname,
+  siteUrl: Astro.site?.toString() ?? 'https://readlab-x.github.io'
+});
+---
+
+<!doctype html>
+<html
+  lang={locale}
+  dir={currentMeta.direction}
+  data-theme="light"
+  data-theme-preference="system"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script is:inline set:html={themeBootstrapScript}></script>
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={seo.canonical} />
+    {seo.alternates.map((entry) => (
+      <link rel="alternate" hreflang={entry.hreflang} href={entry.href} />
+    ))}
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/icons/favicon-16x16.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32x32.png" />
+    <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+    <meta name="theme-color" content={seo.themeColor} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content={seo.canonical} />
+    <meta property="og:locale" content={seo.ogLocale} />
+    <meta property="og:image" content={seo.ogImage} />
+    {seo.jsonLd.map((item) => (
+      <script type="application/ld+json" set:html={JSON.stringify(item)} />
+    ))}
+  </head>
+  <body>
+    <slot />
+    <PageScrollbar />
+  </body>
+</html>

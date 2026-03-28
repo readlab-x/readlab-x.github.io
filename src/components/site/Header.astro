@@ -1,0 +1,76 @@
+---
+import type { Locale } from '../../i18n/config';
+import { getLocalePath } from '../../utils/i18n';
+import LocaleSwitcher from './LocaleSwitcher.astro';
+import ThemeToggle from './ThemeToggle.astro';
+
+interface Props {
+  locale: Locale;
+  navItems: Array<{ href: string; label: string }>;
+  currentPath?: string;
+  overlay?: boolean;
+}
+
+const { locale, navItems, currentPath = '/', overlay = false } = Astro.props as Props;
+const brandHref = getLocalePath(locale);
+
+function isActive(href: string) {
+  if (href.startsWith('#')) {
+    return false;
+  }
+
+  const normalizedCurrentPath = currentPath.replace(/\/$/, '') || '/';
+  const normalizedHref = href.replace(/\/$/, '') || '/';
+
+  if (normalizedHref === '/') {
+    return normalizedCurrentPath === '/';
+  }
+
+  return normalizedCurrentPath === normalizedHref || normalizedCurrentPath.startsWith(`${normalizedHref}/`);
+}
+---
+
+<header class:list={['site-header', overlay && 'site-header--overlay']} data-site-header>
+  <div class="topbar site-header__inner">
+    <a
+      class:list={['brand', overlay && 'brand--reveal-on-scroll']}
+      href={brandHref}
+      aria-label="ReadLab X home"
+    >
+      <img src="/brand/logo-wordmark.png" alt="" />
+    </a>
+    <div class="topbar-actions site-header__actions">
+      <nav class="topnav site-header__nav" aria-label="Primary navigation">
+        {navItems.map((item) => (
+          <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+            {item.label}
+          </a>
+        ))}
+      </nav>
+      <LocaleSwitcher locale={locale} />
+      <ThemeToggle />
+    </div>
+  </div>
+</header>
+
+<script>
+  const headers = Array.from(document.querySelectorAll('[data-site-header]'));
+
+  headers.forEach((header) => {
+    if (!(header instanceof HTMLElement)) return;
+
+    const updateHeaderState = () => {
+      header.dataset.scrolled = window.scrollY > 24 ? 'true' : 'false';
+    };
+
+    updateHeaderState();
+    window.addEventListener('scroll', updateHeaderState, { passive: true });
+    window.addEventListener(
+      'pagehide',
+      () => {
+        window.removeEventListener('scroll', updateHeaderState);
+      },
+      { once: true }
+    );
+  });
+</script>

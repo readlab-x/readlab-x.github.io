@@ -1,0 +1,30 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import ProjectDetailPage from '../../../components/project/ProjectDetailPage.astro';
+import { getProjectDetail, getProjectSlugs, getProjectsPageContent } from '../../../data/projects';
+
+export function getStaticPaths() {
+  return getProjectSlugs().map((slug) => ({
+    params: { slug }
+  }));
+}
+
+const locale = 'en' as const;
+const { slug } = Astro.params;
+
+if (!slug) {
+  throw new Error('Project slug is required.');
+}
+
+const page = getProjectsPageContent(locale);
+const project = getProjectDetail(locale, slug);
+---
+
+<BaseLayout locale={locale} title={project.meta.title} description={project.meta.description}>
+  <ProjectDetailPage
+    locale={locale}
+    page={page}
+    project={project}
+    currentPath={Astro.url.pathname}
+  />
+</BaseLayout>

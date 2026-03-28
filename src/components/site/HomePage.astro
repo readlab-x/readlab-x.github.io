@@ -1,0 +1,72 @@
+---
+import type { Locale } from '../../i18n/config';
+import type { HomeMessages } from '../../i18n/messages/en';
+import { getLocalizedHref } from '../../utils/i18n';
+import ButtonLink from './ButtonLink.astro';
+import Footer from './Footer.astro';
+import Header from './Header.astro';
+import ParticleLogo from './ParticleLogo.astro';
+import SectionHeader from './SectionHeader.astro';
+
+interface Props {
+  locale: Locale;
+  messages: HomeMessages;
+  currentPath?: string;
+}
+
+const { locale, messages, currentPath = '/' } = Astro.props as Props;
+const {
+  hero,
+  projectPreview,
+  navItems,
+  footer
+} = messages;
+const projectArchiveHref = getLocalizedHref(locale, projectPreview.primaryCta.href);
+---
+
+<main class="site-shell">
+  <Header locale={locale} navItems={navItems} currentPath={currentPath} overlay />
+
+  <section class="home-splash" aria-label={hero.title}>
+    <div class="home-splash__particle-wrap">
+      <ParticleLogo class="home-splash__particle" align="top-left" scale={1.08} />
+    </div>
+    <div class="home-splash__name">
+      <p>ReadLab <span class="home-splash__name-accent">X</span></p>
+    </div>
+  </section>
+
+  <section class="home-content">
+    <section class="section project-preview" id="projects">
+      <div class="project-preview__intro home-projects__intro">
+        <SectionHeader eyebrow={projectPreview.eyebrow} title={projectPreview.title} />
+        <p class="project-preview__copy">{projectPreview.copy}</p>
+      </div>
+
+      <div class="project-preview-grid home-projects__grid">
+        {projectPreview.items.map((item) => (
+          <article class="project-card home-projects__card">
+            <div class="project-card__meta">
+              <span>{item.status}</span>
+            </div>
+            <h3 class="project-card__title">{item.title}</h3>
+            <p class="project-card__copy">{item.summary}</p>
+            <ul class="project-card__tags" aria-label={`${item.title} tags`}>
+              {item.tags.map((tag) => (
+                <li>{tag}</li>
+              ))}
+            </ul>
+          </article>
+        ))}
+      </div>
+
+      <div class="project-preview__footer">
+        <p class="project-preview__note">{projectPreview.note}</p>
+        <ButtonLink href={projectArchiveHref} variant="secondary">
+          {projectPreview.primaryCta.label}
+        </ButtonLink>
+      </div>
+    </section>
+  </section>
+</main>
+<Footer navItems={navItems} footer={footer} />

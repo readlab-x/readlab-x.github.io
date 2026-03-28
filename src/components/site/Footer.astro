@@ -1,0 +1,39 @@
+---
+import type { HomeMessages } from '../../i18n/messages/en';
+import ButtonLink from './ButtonLink.astro';
+
+interface Props {
+  navItems: Array<{ href: string; label: string }>;
+  footer: HomeMessages['footer'];
+}
+
+const { navItems, footer } = Astro.props as Props;
+---
+
+<footer class="site-footer">
+  <div class="site-footer__brand">
+    <img src="/brand/logo-mark.png" alt="" />
+    <div>
+      <p class="eyebrow">{footer.eyebrow}</p>
+      <h2>{footer.title}</h2>
+      <p class="site-footer__copy">{footer.copy}</p>
+    </div>
+  </div>
+
+  <div class="site-footer__grid">
+    <div>
+      <p class="site-footer__label">{footer.navTitle}</p>
+      <nav class="site-footer__nav" aria-label="Footer">
+        {navItems.map((item) => (
+          <a href={item.href}>{item.label}</a>
+        ))}
+      </nav>
+    </div>
+    <div class="site-footer__cta">
+      <p class="site-footer__label">{footer.contactTitle}</p>
+      <ButtonLink href={footer.contactHref} variant="secondary">
+        {footer.contactLabel}
+      </ButtonLink>
+    </div>
+  </div>
+</footer>

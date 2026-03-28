@@ -1,0 +1,129 @@
+<div class="page-scrollbar" data-page-scrollbar aria-hidden="true">
+  <div class="page-scrollbar__track" data-page-scrollbar-track>
+    <div class="page-scrollbar__thumb" data-page-scrollbar-thumb></div>
+  </div>
+</div>
+
+<script>
+  const root = document.querySelector('[data-page-scrollbar]');
+
+  if (root instanceof HTMLElement) {
+    const track = root.querySelector('[data-page-scrollbar-track]');
+    const thumb = root.querySelector('[data-page-scrollbar-thumb]');
+
+    if (track instanceof HTMLElement && thumb instanceof HTMLElement) {
+      let dragging = false;
+      let dragStartClientY = 0;
+      let dragStartScrollY = 0;
+      let scrollHideTimer = 0;
+      const documentRoot = document.documentElement;
+      const defaultScrollBehavior = documentRoot.style.scrollBehavior;
+
+      const clamp = (value: number, min: number, max: number) => Math.min(Math.max(value, min), max);
+
+      const setActive = () => {
+        root.dataset.active = 'true';
+        window.clearTimeout(scrollHideTimer);
+        scrollHideTimer = window.setTimeout(() => {
+          if (!dragging) {
+            root.dataset.active = 'false';
+          }
+        }, 720);
+      };
+
+      const syncThumb = () => {
+        const viewportHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        const scrollableHeight = Math.max(documentHeight - viewportHeight, 0);
+
+        if (scrollableHeight <= 0) {
+          root.dataset.hidden = 'true';
+          return;
+        }
+
+        root.dataset.hidden = 'false';
+
+        const trackHeight = track.clientHeight;
+        const thumbHeight = clamp((viewportHeight / documentHeight) * trackHeight, 64, trackHeight * 0.42);
+        const maxThumbOffset = Math.max(trackHeight - thumbHeight, 0);
+        const progress = scrollableHeight > 0 ? window.scrollY / scrollableHeight : 0;
+        const thumbOffset = progress * maxThumbOffset;
+
+        thumb.style.height = `${thumbHeight}px`;
+        thumb.style.transform = `translateY(${thumbOffset}px)`;
+      };
+
+      const scrollToTrackPosition = (clientY: number, behavior: ScrollBehavior = 'smooth') => {
+        const rect = track.getBoundingClientRect();
+        const trackHeight = rect.height;
+        const thumbHeight = thumb.offsetHeight;
+        const maxThumbOffset = Math.max(trackHeight - thumbHeight, 0);
+        const pointerY = clamp(clientY - rect.top - thumbHeight / 2, 0, maxThumbOffset);
+        const ratio = maxThumbOffset > 0 ? pointerY / maxThumbOffset : 0;
+        const scrollableHeight = Math.max(document.documentElement.scrollHeight - window.innerHeight, 0);
+
+        window.scrollTo({
+          top: ratio * scrollableHeight,
+          behavior
+        });
+      };
+
+      const handleScroll = () => {
+        setActive();
+        syncThumb();
+      };
+
+      const handleMouseMove = (event: MouseEvent) => {
+        if (!dragging) return;
+        event.preventDefault();
+        setActive();
+        const rect = track.getBoundingClientRect();
+        const trackHeight = rect.height;
+        const thumbHeight = thumb.offsetHeight;
+        const maxThumbOffset = Math.max(trackHeight - thumbHeight, 0);
+        const scrollableHeight = Math.max(document.documentElement.scrollHeight - window.innerHeight, 0);
+        const scrollDeltaRatio = maxThumbOffset > 0 ? (event.clientY - dragStartClientY) / maxThumbOffset : 0;
+        const nextScrollTop = clamp(dragStartScrollY + scrollDeltaRatio * scrollableHeight, 0, scrollableHeight);
+
+        window.scrollTo({
+          top: nextScrollTop,
+          behavior: 'auto'
+        });
+      };
+
+      const stopDragging = () => {
+        if (!dragging) return;
+        dragging = false;
+        root.dataset.dragging = 'false';
+        document.body.style.userSelect = '';
+        documentRoot.style.scrollBehavior = defaultScrollBehavior;
+        window.removeEventListener('mousemove', handleMouseMove);
+        window.removeEventListener('mouseup', stopDragging);
+      };
+
+      thumb.addEventListener('mousedown', (event) => {
+        event.preventDefault();
+        dragging = true;
+        root.dataset.dragging = 'true';
+        dragStartClientY = event.clientY;
+        dragStartScrollY = window.scrollY;
+        document.body.style.userSelect = 'none';
+        documentRoot.style.scrollBehavior = 'auto';
+        setActive();
+        window.addEventListener('mousemove', handleMouseMove, { passive: false });
+        window.addEventListener('mouseup', stopDragging);
+      });
+
+      track.addEventListener('pointerdown', (event) => {
+        if (event.target === thumb) return;
+        setActive();
+        scrollToTrackPosition(event.clientY);
+      });
+
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      window.addEventListener('resize', syncThumb, { passive: true });
+
+      syncThumb();
+    }
+  }
+</script>
