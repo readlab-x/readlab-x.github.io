@@ -63,6 +63,8 @@ export type HomeMessages = {
     contactTitle: string;
     contactLabel: string;
     contactHref: string;
+    githubLabel: string;
+    githubHref: string;
   };
   meta: {
     title: string;
@@ -71,9 +73,7 @@ export type HomeMessages = {
 };
 
 export const enHomeMessages: HomeMessages = {
-  navItems: [
-    { href: '#projects', label: 'Project' }
-  ],
+  navItems: [],
   hero: {
     eyebrow: 'ReadLab X',
     title: 'One live project, clearly presented.',
@@ -164,23 +164,23 @@ export const enHomeMessages: HomeMessages = {
     }
   ],
   projectPreview: {
-    eyebrow: 'Projects',
-    title: 'Current project.',
+    eyebrow: 'Work',
+    title: 'Symposium Reading Platform',
     copy:
-      'The official site currently shows one real project, and this is the one carrying the public face of ReadLab X.',
-    note: 'More work may come later. For now, the homepage stays intentionally small.',
+      'A reading site for Plato’s Symposium, with entry points through text, speakers, themes, relations, and search.',
+    note: 'Move through the text by speakers, themes, relationships, and search.',
     items: [
       {
         title: 'Symposium Reading Platform',
-        status: 'Live now',
+        status: 'Featured work',
         summary:
-          'A digital reading site for Plato’s Symposium, connecting reading flow, characters, themes, relation graph, and search.',
-        tags: ['Classics', 'Reading Interface', 'SvelteKit']
+          'A digital reading experience for Plato’s Symposium, bringing together the primary text, speakers, themes, relationships, and full-text search.',
+        tags: ['Classics', 'Interactive Reading', 'Full-text Search']
       }
     ],
     primaryCta: {
       href: '/projects/',
-      label: 'View detail'
+      label: 'Read more'
     }
   },
   useCases: [
@@ -192,8 +192,8 @@ export const enHomeMessages: HomeMessages = {
   cta: {
     eyebrow: 'ReadLab X',
     title: 'Building the infrastructure for better reading.',
-    label: 'Start the conversation',
-    href: 'mailto:hello@readlabx.com'
+    label: 'Visit GitHub',
+    href: 'https://github.com/readlab-x'
   },
   footer: {
     eyebrow: 'ReadLab X',
@@ -202,8 +202,10 @@ export const enHomeMessages: HomeMessages = {
       'ReadLab X keeps the site focused on content, structure, and long-form thinking.',
     navTitle: 'Explore',
     contactTitle: 'Contact',
-    contactLabel: 'Talk to us',
-    contactHref: 'mailto:hello@readlabx.com'
+    contactLabel: 'Contact us',
+    contactHref: 'mailto:6iedog@gmail.com',
+    githubLabel: 'GitHub',
+    githubHref: 'https://github.com/readlab-x'
   },
   meta: {
     title: 'ReadLab X | Knowledge tools for serious readers',

@@ -35,6 +35,12 @@ export const themeBootstrapScript = String.raw`
         button.setAttribute('aria-pressed', String(isActive));
       }
     });
+
+    document.querySelectorAll('[data-theme-select]').forEach((select) => {
+      if (select instanceof HTMLSelectElement) {
+        select.value = preference;
+      }
+    });
   };
 
   const applyTheme = (preference) => {
@@ -71,6 +77,14 @@ export const themeBootstrapScript = String.raw`
   };
 
   document.addEventListener('click', handlePreferenceChange);
+  window.addEventListener('readlabx:theme-change', (event) => {
+    const preference = event instanceof CustomEvent ? event.detail : null;
+    if (preference !== 'light' && preference !== 'dark' && preference !== 'system') {
+      return;
+    }
+
+    applyTheme(preference);
+  });
 
   const handleSystemThemeChange = () => {
     if (root.dataset.themePreference === 'system') {

@@ -1,29 +1,51 @@
 ---
 import type { Locale } from '../../i18n/config';
-import { getLocalePath } from '../../utils/i18n';
+import { getLocalizedPath } from '../../utils/i18n';
 
 interface Props {
   locale: Locale;
+  currentPath?: string;
 }
 
-const { locale } = Astro.props as Props;
+const { locale, currentPath = '/' } = Astro.props as Props;
 const locales = [
   { code: 'zh-CN' as const, label: '中文' },
   { code: 'en' as const, label: 'EN' }
 ];
 ---
 
-<nav class="locale-switcher" aria-label="Language switcher">
-  {locales.map((item) => (
-    <a
-      class:list={['locale-switcher__item', { 'is-active': item.code === locale }]}
-      href={getLocalePath(item.code)}
-      aria-current={item.code === locale ? 'page' : undefined}
-      aria-label={item.code === 'zh-CN' ? 'Switch to Chinese' : 'Switch to English'}
-      title={item.code === 'zh-CN' ? 'Switch to Chinese' : 'Switch to English'}
-      lang={item.code}
-    >
-      {item.label}
-    </a>
-  ))}
-</nav>
+<label class="locale-switcher" aria-label="Language switcher">
+  <span class="sr-only">Language</span>
+  <select class="locale-switcher__select" data-locale-switcher>
+    {locales.map((item) => (
+      <option
+        value={getLocalizedPath(item.code, currentPath)}
+        selected={item.code === locale}
+        lang={item.code}
+      >
+        {item.label}
+      </option>
+    ))}
+  </select>
+</label>
+
+<script>
+  document.querySelectorAll('[data-locale-switcher]').forEach((node) => {
+    if (!(node instanceof HTMLSelectElement)) return;
+
+    const handleChange = () => {
+      if (node.value) {
+        window.location.href = node.value;
+      }
+    };
+
+    node.addEventListener('change', handleChange);
+    window.addEventListener(
+      'pagehide',
+      () => {
+        node.removeEventListener('change', handleChange);
+      },
+      { once: true }
+    );
+  });
+</script>

@@ -13,6 +13,7 @@ interface Props {
 
 const { locale, navItems, currentPath = '/', overlay = false } = Astro.props as Props;
 const brandHref = getLocalePath(locale);
+const hasNavItems = navItems.length > 0;
 
 function isActive(href: string) {
   if (href.startsWith('#')) {
@@ -39,15 +40,17 @@ function isActive(href: string) {
     >
       <img src="/brand/logo-wordmark.png" alt="" />
     </a>
-    <div class="topbar-actions site-header__actions">
-      <nav class="topnav site-header__nav" aria-label="Primary navigation">
-        {navItems.map((item) => (
-          <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
-            {item.label}
-          </a>
-        ))}
-      </nav>
-      <LocaleSwitcher locale={locale} />
+    <div class:list={['topbar-actions', 'site-header__actions', !hasNavItems && 'site-header__actions--compact']}>
+      {hasNavItems && (
+        <nav class="topnav site-header__nav" aria-label="Primary navigation">
+          {navItems.map((item) => (
+            <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
+              {item.label}
+            </a>
+          ))}
+        </nav>
+      )}
+      <LocaleSwitcher locale={locale} currentPath={currentPath} />
       <ThemeToggle />
     </div>
   </div>

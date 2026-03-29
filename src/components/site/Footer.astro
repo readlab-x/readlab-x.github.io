@@ -1,6 +1,5 @@
 ---
 import type { HomeMessages } from '../../i18n/messages/en';
-import ButtonLink from './ButtonLink.astro';
 
 interface Props {
   navItems: Array<{ href: string; label: string }>;
@@ -8,32 +7,41 @@ interface Props {
 }
 
 const { navItems, footer } = Astro.props as Props;
+const year = new Date().getFullYear();
 ---
 
 <footer class="site-footer">
-  <div class="site-footer__brand">
-    <img src="/brand/logo-mark.png" alt="" />
-    <div>
-      <p class="eyebrow">{footer.eyebrow}</p>
-      <h2>{footer.title}</h2>
-      <p class="site-footer__copy">{footer.copy}</p>
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <img src="/brand/logo-mark.png" alt="" />
+      <div class="site-footer__brand-copy">
+        <p class="site-footer__eyebrow">{footer.eyebrow}</p>
+        <p class="site-footer__title">ReadLab <span>X</span></p>
+        <p class="site-footer__copy">{footer.copy}</p>
+      </div>
     </div>
-  </div>
 
-  <div class="site-footer__grid">
-    <div>
-      <p class="site-footer__label">{footer.navTitle}</p>
-      <nav class="site-footer__nav" aria-label="Footer">
-        {navItems.map((item) => (
-          <a href={item.href}>{item.label}</a>
-        ))}
-      </nav>
-    </div>
-    <div class="site-footer__cta">
-      <p class="site-footer__label">{footer.contactTitle}</p>
-      <ButtonLink href={footer.contactHref} variant="secondary">
-        {footer.contactLabel}
-      </ButtonLink>
+    <div class="site-footer__meta">
+      <div class="site-footer__group">
+        <p class="site-footer__label">{footer.navTitle}</p>
+        <nav class="site-footer__nav" aria-label="Footer">
+          {navItems.map((item) => (
+            <a href={item.href}>{item.label}</a>
+          ))}
+        </nav>
+      </div>
+
+      <div class="site-footer__group">
+        <p class="site-footer__label">{footer.contactTitle}</p>
+        <a class="site-footer__contact" href={footer.contactHref}>
+          {footer.contactLabel}
+        </a>
+        <a class="site-footer__contact" href={footer.githubHref} target="_blank" rel="noreferrer">
+          {footer.githubLabel}
+        </a>
+      </div>
+
+      <p class="site-footer__copyright">© {year} ReadLab X</p>
     </div>
   </div>
 </footer>

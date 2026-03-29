@@ -2,11 +2,9 @@
 import type { Locale } from '../../i18n/config';
 import type { HomeMessages } from '../../i18n/messages/en';
 import { getLocalizedHref } from '../../utils/i18n';
-import ButtonLink from './ButtonLink.astro';
 import Footer from './Footer.astro';
 import Header from './Header.astro';
 import ParticleLogo from './ParticleLogo.astro';
-import SectionHeader from './SectionHeader.astro';
 
 interface Props {
   locale: Locale;
@@ -22,12 +20,13 @@ const {
   footer
 } = messages;
 const projectArchiveHref = getLocalizedHref(locale, projectPreview.primaryCta.href);
+const [currentProject] = projectPreview.items;
 ---
 
 <main class="site-shell">
   <Header locale={locale} navItems={navItems} currentPath={currentPath} overlay />
 
-  <section class="home-splash" aria-label={hero.title}>
+  <section class="home-splash" aria-label="ReadLab X">
     <div class="home-splash__particle-wrap">
       <ParticleLogo class="home-splash__particle" align="top-left" scale={1.08} />
     </div>
@@ -37,35 +36,40 @@ const projectArchiveHref = getLocalizedHref(locale, projectPreview.primaryCta.hr
   </section>
 
   <section class="home-content">
-    <section class="section project-preview" id="projects">
-      <div class="project-preview__intro home-projects__intro">
-        <SectionHeader eyebrow={projectPreview.eyebrow} title={projectPreview.title} />
-        <p class="project-preview__copy">{projectPreview.copy}</p>
-      </div>
+    <section class="section project-preview project-preview--splash" id="projects">
+      <div class="project-preview__backdrop" aria-hidden="true"></div>
 
-      <div class="project-preview-grid home-projects__grid">
-        {projectPreview.items.map((item) => (
-          <article class="project-card home-projects__card">
-            <div class="project-card__meta">
-              <span>{item.status}</span>
-            </div>
-            <h3 class="project-card__title">{item.title}</h3>
-            <p class="project-card__copy">{item.summary}</p>
-            <ul class="project-card__tags" aria-label={`${item.title} tags`}>
-              {item.tags.map((tag) => (
+      <article class="project-preview-feature">
+        <div class="project-preview-feature__heading">
+          <p class="eyebrow">{projectPreview.eyebrow}</p>
+          <div class="project-card__meta">
+            <span>{currentProject.status}</span>
+          </div>
+          <h3 class="project-card__title">{currentProject.title}</h3>
+          <p class="project-card__copy">{currentProject.summary}</p>
+        </div>
+
+        <div class="project-preview-feature__rail">
+          <p class="project-preview__copy">{projectPreview.copy}</p>
+          <div class="project-preview-feature__tags">
+            <p class="project-preview-feature__label">{projectPreview.note}</p>
+            <ul class="project-card__tags" aria-label={`${currentProject.title} tags`}>
+              {currentProject.tags.map((tag) => (
                 <li>{tag}</li>
               ))}
             </ul>
-          </article>
-        ))}
-      </div>
+          </div>
 
-      <div class="project-preview__footer">
-        <p class="project-preview__note">{projectPreview.note}</p>
-        <ButtonLink href={projectArchiveHref} variant="secondary">
-          {projectPreview.primaryCta.label}
-        </ButtonLink>
-      </div>
+          <div class="project-preview__footer project-preview__footer--stacked">
+            <a class="project-action project-action--secondary" href={projectArchiveHref}>
+              {projectPreview.primaryCta.label}
+            </a>
+            <a class="project-action project-action--primary" href={hero.secondaryCta.href}>
+              {hero.secondaryCta.label}
+            </a>
+          </div>
+        </div>
+      </article>
     </section>
   </section>
 </main>

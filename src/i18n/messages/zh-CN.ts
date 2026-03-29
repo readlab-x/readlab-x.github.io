@@ -1,7 +1,7 @@
 import type { HomeMessages } from './en';
 
 export const zhCNHomeMessages: HomeMessages = {
-  navItems: [{ href: '#projects', label: '项目' }],
+  navItems: [],
   hero: {
     eyebrow: 'ReadLab X',
     title: '只展示一个已上线项目。',
@@ -49,30 +49,30 @@ export const zhCNHomeMessages: HomeMessages = {
   features: [],
   workflow: [],
   projectPreview: {
-    eyebrow: '项目',
-    title: '当前项目。',
-    copy: '官网目前只展示一个真实项目，它也是 ReadLab X 现阶段最重要的公开作品。',
-    note: '后续项目会再慢慢加入。现在先把这个项目讲清楚。',
+    eyebrow: '作品',
+    title: '会饮研读台',
+    copy: '围绕柏拉图《会饮》的阅读网站，提供原文、人物、主题、关系与搜索等入口。',
+    note: '你可以按发言顺序、人物关系、主题线索或全文搜索进入这部作品。',
     items: [
       {
         title: '会饮研读台',
-        status: '已上线',
+        status: '精选作品',
         summary:
-          '围绕柏拉图《会饮》搭建的数字研读网站，连接原文阅读、人物索引、主题地图、关系图与全文搜索。',
-        tags: ['古典学', '阅读界面', 'SvelteKit']
+          '围绕柏拉图《会饮》搭建的数字阅读体验，把原文、人物、主题、关系与全文搜索组织成一个可进入、可回看的界面。',
+        tags: ['古典作品', '交互阅读', '全文搜索']
       }
     ],
     primaryCta: {
       href: '/projects/',
-      label: '查看详情'
+      label: '了解更多'
     }
   },
   useCases: [],
   cta: {
     eyebrow: 'ReadLab X',
     title: '为更好的阅读搭建基础设施。',
-    label: '开始交流',
-    href: 'mailto:hello@readlabx.com'
+    label: '访问 GitHub',
+    href: 'https://github.com/readlab-x'
   },
   footer: {
     eyebrow: 'ReadLab X',
@@ -80,8 +80,10 @@ export const zhCNHomeMessages: HomeMessages = {
     copy: '官网只保留必要的信息、项目入口和联系路径。',
     navTitle: '浏览',
     contactTitle: '联系',
-    contactLabel: '联系团队',
-    contactHref: 'mailto:hello@readlabx.com'
+    contactLabel: '联系我们',
+    contactHref: 'mailto:6iedog@gmail.com',
+    githubLabel: 'GitHub 主页',
+    githubHref: 'https://github.com/readlab-x'
   },
   meta: {
     title: 'ReadLab X | 会饮研读台',
