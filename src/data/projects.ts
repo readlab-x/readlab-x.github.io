@@ -23,6 +23,7 @@ export type ProjectSection = {
 
 export type ProjectDetailContent = {
   slug: string;
+  liveUrl: string;
   year: string;
   status: string;
   title: string;
@@ -64,6 +65,7 @@ export type ProjectsPageContent = {
 
 type LocalizedProject = {
   slug: string;
+  liveUrl: string;
   year: string;
   status: Record<Locale, string>;
   title: Record<Locale, string>;
@@ -81,6 +83,7 @@ type LocalizedProject = {
 const projectCatalog: LocalizedProject[] = [
   {
     slug: 'symposium-web',
+    liveUrl: 'https://readlab-x.github.io/symposium-web/',
     year: '2026',
     status: {
       'zh-CN': '已上线',
@@ -176,6 +179,105 @@ const projectCatalog: LocalizedProject[] = [
         description: 'A digital reading site for Plato’s Symposium, connecting close reading, character index, theme map, relation graph, and full-text search.'
       }
     }
+  },
+  {
+    slug: 'jiangxiang-school',
+    liveUrl: 'https://readlab-x.github.io/jiangxiang-school/',
+    year: '2026',
+    status: {
+      'zh-CN': '已上线',
+      en: 'Live now'
+    },
+    title: {
+      'zh-CN': '江相派',
+      en: 'Jiangxiang School'
+    },
+    summary: {
+      'zh-CN': '四本秘本的原文逐段注解，追踪江相派如何把可替换的星名、方位和断语组织成一套可批量生产的骗术模板。',
+      en: 'A paragraph-by-paragraph annotated edition of four Jiangxiang manuals, tracing how interchangeable signs and phrases become a repeatable template for deception.'
+    },
+    eyebrow: {
+      'zh-CN': '项目详情',
+      en: 'Project detail'
+    },
+    headline: {
+      'zh-CN': '把一套骗术秘本还原成可检视、可对照的文本现场。',
+      en: 'Make a set of deception manuals inspectable as a structured, cross-referenced text.'
+    },
+    tags: {
+      'zh-CN': ['原文注解', '民俗史料', '文本结构'],
+      en: ['Text Annotation', 'Folk History', 'Textual Structure']
+    },
+    metrics: {
+      'zh-CN': [
+        { label: '定位', value: '数字史料注解网站' },
+        { label: '文本', value: '四本秘本 / 122 段' },
+        { label: '入口', value: '原文 / 注解 / 分歧记录' }
+      ],
+      en: [
+        { label: 'Role', value: 'Digital source annotation site' },
+        { label: 'Corpus', value: 'Four manuals / 122 passages' },
+        { label: 'Entry points', value: 'Text / Notes / Source disputes' }
+      ]
+    },
+    overviewTitle: {
+      'zh-CN': '项目概览',
+      en: 'Overview'
+    },
+    overview: {
+      'zh-CN': [
+        '江相派不是相术教程，而是一套围绕四本秘本搭建的数字史料阅读界面。网站保留 122 段原文，并逐段补充注解，让文本中的固定句式、可替换字段和行骗逻辑能够被直接检视。',
+        '它把容易被神秘化的民俗材料还原为可阅读、可比较、可追溯的文本对象，也保留了不同来源对篇目归类的史料分歧。'
+      ],
+      en: [
+        'Jiangxiang School is not a fortune-telling tutorial, but a digital source-reading interface built around four manuals. It preserves 122 original passages and annotates them one by one, making reusable syntax and the mechanics of deception inspectable.',
+        'The project turns material often treated as mysterious folklore into a readable, comparable, and traceable textual object while preserving disagreements over how the sources are classified.'
+      ]
+    },
+    sections: {
+      'zh-CN': [
+        {
+          title: '项目在做什么',
+          body: [
+            '网站以原文为核心，逐段展示注解，并把田宅、财帛、迁徒、官禄等内容中的可替换字段标出来。读者可以看到同一结构如何通过替换星名或方向，生成看似不同的断语。',
+            '页面同时记录来源之间的归类差异，让史料不确定性成为阅读界面的一部分。'
+          ]
+        },
+        {
+          title: '为什么它重要',
+          body: [
+            '这个项目把“知识界面”推进到另一种材料：不是经典文本的辅助阅读，而是对一套实际运作过的语言模板进行拆解。',
+            '它展示了 ReadLab X 如何将复杂、易被误读的材料组织成清晰而可核验的公共阅读入口。'
+          ]
+        }
+      ],
+      en: [
+        {
+          title: 'What the project does',
+          body: [
+            'The site keeps the source text central, annotating each passage and marking interchangeable fields across houses, fortunes, travel, and office. Readers can see how changing a star name or direction produces apparently different readings from the same structure.',
+            'It also records disagreements between sources, making uncertainty part of the reading interface.'
+          ]
+        },
+        {
+          title: 'Why it matters',
+          body: [
+            'The project applies the knowledge-interface approach to a different kind of material: it disassembles a language template that once operated as a practical system of deception.',
+            'It shows how ReadLab X can turn complex and easily misread material into a clear, verifiable public reading entry point.'
+          ]
+        }
+      ]
+    },
+    meta: {
+      'zh-CN': {
+        title: 'ReadLab X | 江相派',
+        description: '四本江相秘本的原文逐段注解，记录可替换的骗术模板与史料分歧。'
+      },
+      en: {
+        title: 'ReadLab X | Jiangxiang School',
+        description: 'A paragraph-by-paragraph annotated edition of four Jiangxiang manuals, documenting reusable deception templates and source disputes.'
+      }
+    }
   }
 ];
 
@@ -189,20 +291,20 @@ const pageCopy = {
     ],
     intro: {
       eyebrow: '项目档案',
-      title: '当前项目：会饮研读台。',
+      title: '项目档案：从经典研读到史料拆解。',
       copy:
-        '现阶段官网只展示一个真实项目。它不是概念稿，而是一套已经上线的数字研读网站，用来展示 ReadLab X 如何把严肃阅读做成可进入、可导航、可研究的界面。',
+        '这里收录 ReadLab X 已上线的阅读型项目：从围绕《会饮》的数字研读，到对江相秘本的逐段注解。它们共同展示如何把复杂材料做成可进入、可导航、可核验的界面。',
       note:
-        '随着后续项目出现，这里会继续扩展。但现在最重要的是把现有代表作讲清楚。',
+        '每个项目都从一组具体文本出发，把阅读路径、注解和结构化线索组织成公共入口。',
       homeLabel: '返回首页',
       homeHref: '/',
-      sectionEyebrow: '当前项目',
-      sectionTitle: '先把唯一真实的项目讲清楚。'
+      sectionEyebrow: '项目目录',
+      sectionTitle: '两种材料，两条进入文本的路径。'
     },
     detailBackLabel: '返回项目档案',
     meta: {
       title: 'ReadLab X | 项目档案',
-      description: '当前官网展示的核心项目是会饮研读台，一套围绕《会饮》构建的数字研读网站。'
+      description: 'ReadLab X 已上线项目档案，收录会饮研读台与江相派两套阅读型数字项目。'
     }
   },
   en: {
@@ -214,21 +316,21 @@ const pageCopy = {
     ],
     intro: {
       eyebrow: 'Project archive',
-      title: 'Current project: symposium-web.',
+      title: 'Project archive: from close reading to source analysis.',
       copy:
-        'The official site currently presents one real project. It is not a concept piece, but a live digital reading site that shows how ReadLab X turns serious reading into a navigable interface.',
+        'This archive collects ReadLab X projects that turn difficult material into navigable, verifiable reading interfaces, from Plato’s Symposium to annotated Jiangxiang manuals.',
       note:
-        'More projects may arrive later. For now, the important thing is to present the strongest existing work clearly.',
+        'Each project starts with a concrete body of text and builds a public entry point through paths, annotations, and structure.',
       homeLabel: 'Back to home',
       homeHref: '/en/',
-      sectionEyebrow: 'Current project',
-      sectionTitle: 'Start by explaining the one real project well.'
+      sectionEyebrow: 'Project directory',
+      sectionTitle: 'Two kinds of material, two ways into the text.'
     },
     detailBackLabel: 'Back to project archive',
     meta: {
       title: 'ReadLab X | Projects',
       description:
-        'The official site currently features symposium-web, a digital reading site for Plato’s Symposium.'
+        'The ReadLab X project archive features Symposium Reading Platform and Jiangxiang School, two live reading-oriented digital projects.'
     }
   }
 } satisfies Record<
@@ -286,6 +388,7 @@ export function getProjectDetail(locale: Locale, slug: string): ProjectDetailCon
 
   return {
     slug: project.slug,
+    liveUrl: project.liveUrl,
     year: project.year,
     status: project.status[locale],
     title: project.title[locale],

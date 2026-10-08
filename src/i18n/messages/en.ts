@@ -73,7 +73,11 @@ export type HomeMessages = {
 };
 
 export const enHomeMessages: HomeMessages = {
-  navItems: [],
+  navItems: [
+    { href: '#home', label: 'Home' },
+    { href: '#symposium', label: 'Symposium' },
+    { href: '#jiangxiang', label: 'Jiangxiang' }
+  ],
   hero: {
     eyebrow: 'ReadLab X',
     title: 'One live project, clearly presented.',

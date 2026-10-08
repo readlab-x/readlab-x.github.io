@@ -25,6 +25,9 @@ const { locale, page, project, currentPath = '/' } = Astro.props as Props;
       <p class="lede">{project.headline}</p>
       <p class="project-detail-hero__summary">{project.summary}</p>
       <div class="hero-actions">
+        <ButtonLink href={project.liveUrl} external>
+          {locale === 'zh-CN' ? '访问项目' : 'Visit project'}
+        </ButtonLink>
         <ButtonLink href={project.backHref} variant="secondary">
           {project.backLabel}
         </ButtonLink>

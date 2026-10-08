@@ -1,7 +1,11 @@
 import type { HomeMessages } from './en';
 
 export const zhCNHomeMessages: HomeMessages = {
-  navItems: [],
+  navItems: [
+    { href: '#home', label: '首页' },
+    { href: '#symposium', label: '会饮研读台' },
+    { href: '#jiangxiang', label: '江相派' }
+  ],
   hero: {
     eyebrow: 'ReadLab X',
     title: '只展示一个已上线项目。',
