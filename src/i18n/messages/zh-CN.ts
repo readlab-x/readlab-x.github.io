@@ -89,7 +89,7 @@ export const zhCNHomeMessages: HomeMessages = {
     githubHref: 'https://github.com/readlab-x'
   },
   meta: {
-    title: 'ReadLab X | 会饮研读台',
+    title: 'ReadLab X',
     description: 'ReadLab X 当前公开展示的核心项目是会饮研读台，一套围绕《会饮》构建的数字研读网站。'
   }
 };
