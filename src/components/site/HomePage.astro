@@ -2,7 +2,9 @@
 import type { Locale } from '../../i18n/config';
 import type { HomeMessages } from '../../i18n/messages/en';
 import { getProjectDetail } from '../../data/projects';
-import { getLocalizedHref } from '../../utils/i18n';
+import { getLocalePath, getLocalizedHref } from '../../utils/i18n';
+import Badge from '../starwind/badge/Badge.astro';
+import Button from '../starwind/button/Button.astro';
 import Header from './Header.astro';
 import ParticleLogo from './ParticleLogo.astro';
 
@@ -18,10 +20,8 @@ const projectArchiveHref = getLocalizedHref(locale, projectPreview.primaryCta.hr
 const symposium = getProjectDetail(locale, 'symposium-web');
 const jiangxiang = getProjectDetail(locale, 'jiangxiang-school');
 const navItems = [
-  { href: '#home', label: locale === 'zh-CN' ? '首页' : 'Home' },
-  { href: '#symposium', label: symposium.title },
-  { href: '#jiangxiang', label: jiangxiang.title },
-  { href: '#end', label: locale === 'zh-CN' ? '结尾' : 'End' }
+  { href: getLocalePath(locale), label: locale === 'zh-CN' ? '首页' : 'Home' },
+  { href: projectArchiveHref, label: locale === 'zh-CN' ? '项目集' : 'Projects' }
 ];
 ---
 
@@ -35,30 +35,28 @@ const navItems = [
     <div class="home-splash__name">
       <p>ReadLab <span class="home-splash__name-accent">X</span></p>
     </div>
-    <span class="home-slide__index">01 / 04</span>
   </section>
 
   <section class="home-slide home-slide--project" id="symposium" aria-labelledby="symposium-title">
     <div class="home-slide__inner">
       <div class="home-slide__copy">
         <p class="eyebrow">{symposium.eyebrow}</p>
-        <p class="home-slide__index">02 / 04</p>
         <h1 id="symposium-title">{symposium.title}</h1>
         <p class="lede">{symposium.headline}</p>
         <p class="home-slide__summary">{symposium.summary}</p>
         <div class="hero-actions">
-          <a class="button button-primary" href={symposium.liveUrl} target="_blank" rel="noreferrer">
+          <Button as="a" variant="primary" href={symposium.liveUrl} target="_blank" rel="noreferrer" class="button">
             {locale === 'zh-CN' ? '访问项目' : 'Visit project'}
-          </a>
-          <a class="button button-secondary" href={projectArchiveHref}>
+          </Button>
+          <Button as="a" variant="secondary" href={projectArchiveHref} class="button">
             {projectPreview.primaryCta.label}
-          </a>
+          </Button>
         </div>
       </div>
       <aside class="home-slide__aside">
         <p class="home-slide__aside-label">{locale === 'zh-CN' ? '文本入口' : 'Entry points'}</p>
         <ul class="project-card__tags" aria-label={`${symposium.title} tags`}>
-          {symposium.tags.map((tag) => <li>{tag}</li>)}
+          {symposium.tags.map((tag) => <li><Badge>{tag}</Badge></li>)}
         </ul>
         <dl class="home-slide__metrics">
           {symposium.metrics.map((metric) => (
@@ -73,23 +71,22 @@ const navItems = [
     <div class="home-slide__inner">
       <div class="home-slide__copy">
         <p class="eyebrow">{jiangxiang.eyebrow}</p>
-        <p class="home-slide__index">03 / 04</p>
         <h1 id="jiangxiang-title">{jiangxiang.title}</h1>
         <p class="lede">{jiangxiang.headline}</p>
         <p class="home-slide__summary">{jiangxiang.summary}</p>
         <div class="hero-actions">
-          <a class="button button-primary" href={jiangxiang.liveUrl} target="_blank" rel="noreferrer">
+          <Button as="a" variant="primary" href={jiangxiang.liveUrl} target="_blank" rel="noreferrer" class="button">
             {locale === 'zh-CN' ? '访问项目' : 'Visit project'}
-          </a>
-          <a class="button button-secondary" href={projectArchiveHref}>
+          </Button>
+          <Button as="a" variant="secondary" href={projectArchiveHref} class="button">
             {projectPreview.primaryCta.label}
-          </a>
+          </Button>
         </div>
       </div>
       <aside class="home-slide__aside">
         <p class="home-slide__aside-label">{locale === 'zh-CN' ? '文本入口' : 'Entry points'}</p>
         <ul class="project-card__tags" aria-label={`${jiangxiang.title} tags`}>
-          {jiangxiang.tags.map((tag) => <li>{tag}</li>)}
+          {jiangxiang.tags.map((tag) => <li><Badge>{tag}</Badge></li>)}
         </ul>
         <dl class="home-slide__metrics">
           {jiangxiang.metrics.map((metric) => (
@@ -103,13 +100,15 @@ const navItems = [
   <section class="home-slide home-slide--end" id="end" aria-labelledby="end-title">
     <div class="home-slide__end-inner">
       <p class="eyebrow">{cta.eyebrow}</p>
-      <p class="home-slide__index">04 / 04</p>
       <h1 id="end-title">{cta.title}</h1>
-      <p class="home-slide__summary">{footer.copy}</p>
       <div class="hero-actions">
-        <a class="button button-primary" href={cta.href} target="_blank" rel="noreferrer">{cta.label}</a>
-        <a class="button button-secondary" href={footer.contactHref}>{footer.contactLabel}</a>
+        <Button as="a" variant="primary" href={cta.href} target="_blank" rel="noreferrer" class="button">{cta.label}</Button>
+        <Button as="a" variant="secondary" href={footer.contactHref} class="button home-slide__contact-button">{footer.contactLabel}</Button>
       </div>
     </div>
   </section>
 </main>
+
+<script>
+  import '../../lib/home-slides';
+</script>

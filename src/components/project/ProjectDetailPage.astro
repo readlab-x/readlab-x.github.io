@@ -15,10 +15,10 @@ interface Props {
 const { locale, page, project, currentPath = '/' } = Astro.props as Props;
 ---
 
-<main class="site-shell project-detail-shell">
+<main class:list={['site-shell', 'project-detail-shell', `project-detail-shell--${project.slug}`]}>
   <Header locale={locale} navItems={page.navItems} currentPath={currentPath} />
 
-  <section class="section project-detail-hero">
+  <section class="project-detail-hero">
     <div class="project-detail-hero__main">
       <p class="eyebrow">{project.eyebrow}</p>
       <h1>{project.title}</h1>
@@ -35,27 +35,16 @@ const { locale, page, project, currentPath = '/' } = Astro.props as Props;
     </div>
 
     <aside class="project-detail-hero__aside">
-      <div class="project-card__meta project-detail-hero__meta">
-        <span>{project.status}</span>
-        <span>{project.year}</span>
-      </div>
-      <ul class="project-card__tags" aria-label={`${project.title} tags`}>
-        {project.tags.map((tag) => (
-          <li>{tag}</li>
-        ))}
-      </ul>
-      <dl class="project-metrics">
-        {project.metrics.map((metric) => (
-          <div class="project-metrics__item">
-            <dt>{metric.label}</dt>
-            <dd>{metric.value}</dd>
-          </div>
-        ))}
-      </dl>
+      <figure class="project-detail-preview">
+        <img
+          src={`/projects/${project.slug}-preview.png`}
+          alt={locale === 'zh-CN' ? `${project.title} 页面截图` : `${project.title} interface preview`}
+        />
+      </figure>
     </aside>
   </section>
 
-  <section class="section project-detail-body">
+  <section class="project-detail-body">
     <div class="project-detail-body__intro">
       <p class="eyebrow">{project.overviewTitle}</p>
       <div class="project-detail-copy">

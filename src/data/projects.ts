@@ -284,18 +284,14 @@ const projectCatalog: LocalizedProject[] = [
 const pageCopy = {
   'zh-CN': {
     navItems: [
-      { href: '/#features', label: '能力' },
-      { href: '/#workflow', label: '流程' },
-      { href: '/#use-cases', label: '场景' },
-      { href: '/projects/', label: '项目档案' }
+      { href: '/', label: '首页' },
+      { href: '/projects/', label: '项目集' }
     ],
     intro: {
       eyebrow: '项目档案',
-      title: '项目档案：从经典研读到史料拆解。',
-      copy:
-        '这里收录 ReadLab X 已上线的阅读型项目：从围绕《会饮》的数字研读，到对江相秘本的逐段注解。它们共同展示如何把复杂材料做成可进入、可导航、可核验的界面。',
-      note:
-        '每个项目都从一组具体文本出发，把阅读路径、注解和结构化线索组织成公共入口。',
+      title: '项目档案',
+      copy: 'ReadLab X 已发布的项目，按时间与状态列于此处。',
+      note: '选择一个项目，进入详情页查看完整介绍。',
       homeLabel: '返回首页',
       homeHref: '/',
       sectionEyebrow: '项目目录',
@@ -309,18 +305,14 @@ const pageCopy = {
   },
   en: {
     navItems: [
-      { href: '/en/#features', label: 'Capabilities' },
-      { href: '/en/#workflow', label: 'Workflow' },
-      { href: '/en/#use-cases', label: 'Use cases' },
+      { href: '/en/', label: 'Home' },
       { href: '/en/projects/', label: 'Projects' }
     ],
     intro: {
       eyebrow: 'Project archive',
-      title: 'Project archive: from close reading to source analysis.',
-      copy:
-        'This archive collects ReadLab X projects that turn difficult material into navigable, verifiable reading interfaces, from Plato’s Symposium to annotated Jiangxiang manuals.',
-      note:
-        'Each project starts with a concrete body of text and builds a public entry point through paths, annotations, and structure.',
+      title: 'Project archive',
+      copy: 'Published ReadLab X projects, listed by date and status.',
+      note: 'Choose a project to open its full detail page.',
       homeLabel: 'Back to home',
       homeHref: '/en/',
       sectionEyebrow: 'Project directory',

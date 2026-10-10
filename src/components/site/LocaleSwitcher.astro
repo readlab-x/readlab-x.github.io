@@ -1,4 +1,10 @@
 ---
+import Select from '../starwind/select/Select.astro';
+import SelectContent from '../starwind/select/SelectContent.astro';
+import SelectItem from '../starwind/select/SelectItem.astro';
+import SelectTrigger from '../starwind/select/SelectTrigger.astro';
+import SelectValue from '../starwind/select/SelectValue.astro';
+import Globe from '@tabler/icons/outline/world.svg';
 import type { Locale } from '../../i18n/config';
 import { getLocalizedPath } from '../../utils/i18n';
 
@@ -10,42 +16,42 @@ interface Props {
 const { locale, currentPath = '/' } = Astro.props as Props;
 const locales = [
   { code: 'zh-CN' as const, label: '中文' },
-  { code: 'en' as const, label: 'EN' }
+  { code: 'en' as const, label: 'English' }
 ];
 ---
 
-<label class="locale-switcher" aria-label="Language switcher">
+<div class="locale-switcher" aria-label="Language switcher">
   <span class="sr-only">Language</span>
-  <select class="locale-switcher__select" data-locale-switcher>
-    {locales.map((item) => (
-      <option
-        value={getLocalizedPath(item.code, currentPath)}
-        selected={item.code === locale}
-        lang={item.code}
-      >
-        {item.label}
-      </option>
-    ))}
-  </select>
-</label>
+  <Select class="locale-switcher__select" defaultValue={locale} data-locale-switcher>
+    <SelectTrigger size="sm" showIcon={false} aria-label="Language switcher">
+      <Globe aria-hidden="true" class="locale-switcher__icon" />
+      <SelectValue />
+    </SelectTrigger>
+    <SelectContent size="sm">
+      {locales.map((item) => (
+        <SelectItem value={item.code} lang={item.code} data-locale-path={getLocalizedPath(item.code, currentPath)}>
+          {item.label}
+        </SelectItem>
+      ))}
+    </SelectContent>
+  </Select>
+</div>
 
 <script>
-  document.querySelectorAll('[data-locale-switcher]').forEach((node) => {
-    if (!(node instanceof HTMLSelectElement)) return;
+  const handleLocaleChange = (event: Event) => {
+    const target = event.target instanceof Element
+      ? event.target.closest('[data-locale-path]')
+      : null;
 
-    const handleChange = () => {
-      if (node.value) {
-        window.location.href = node.value;
-      }
-    };
+    if (target instanceof HTMLElement && target.dataset.localePath) {
+      window.location.href = target.dataset.localePath;
+    }
+  };
 
-    node.addEventListener('change', handleChange);
-    window.addEventListener(
-      'pagehide',
-      () => {
-        node.removeEventListener('change', handleChange);
-      },
-      { once: true }
-    );
-  });
+  document.addEventListener('click', handleLocaleChange);
+  window.addEventListener(
+    'pagehide',
+    () => document.removeEventListener('click', handleLocaleChange),
+    { once: true }
+  );
 </script>

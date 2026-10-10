@@ -1,8 +1,13 @@
----
+    ---
+import NavigationMenu from '../starwind/navigation-menu/NavigationMenu.astro';
+import NavigationMenuItem from '../starwind/navigation-menu/NavigationMenuItem.astro';
+import NavigationMenuLink from '../starwind/navigation-menu/NavigationMenuLink.astro';
+import NavigationMenuList from '../starwind/navigation-menu/NavigationMenuList.astro';
 import type { Locale } from '../../i18n/config';
 import { getLocalePath } from '../../utils/i18n';
 import LocaleSwitcher from './LocaleSwitcher.astro';
 import ThemeToggle from './ThemeToggle.astro';
+import Github from '@tabler/icons/outline/brand-github.svg';
 
 interface Props {
   locale: Locale;
@@ -40,18 +45,32 @@ function isActive(href: string) {
     >
       <img src="/brand/logo-wordmark.png" alt="" />
     </a>
-    <div class:list={['topbar-actions', 'site-header__actions', !hasNavItems && 'site-header__actions--compact']}>
-      {hasNavItems && (
-        <nav class="topnav site-header__nav" aria-label="Primary navigation">
+    {hasNavItems && (
+      <NavigationMenu class="topnav site-header__nav" aria-label="Primary navigation" disablePortal>
+        <NavigationMenuList>
           {navItems.map((item) => (
-            <a href={item.href} aria-current={isActive(item.href) ? 'page' : undefined}>
-              {item.label}
-            </a>
+            <NavigationMenuItem>
+              <NavigationMenuLink href={item.href} active={isActive(item.href)}>
+                {item.label}
+              </NavigationMenuLink>
+            </NavigationMenuItem>
           ))}
-        </nav>
-      )}
+        </NavigationMenuList>
+      </NavigationMenu>
+    )}
+    <div class:list={['topbar-actions', 'site-header__actions', !hasNavItems && 'site-header__actions--compact']}>
       <LocaleSwitcher locale={locale} currentPath={currentPath} />
       <ThemeToggle />
+      <a
+        class="github-link"
+        href="https://github.com/readlab-x"
+        target="_blank"
+        rel="noreferrer"
+        aria-label="GitHub"
+        title="GitHub"
+      >
+        <Github aria-hidden="true" />
+      </a>
     </div>
   </div>
 </header>

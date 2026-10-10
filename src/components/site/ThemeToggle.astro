@@ -1,22 +1,74 @@
 ---
-const options = [
-  { value: 'light', label: 'Light', ariaLabel: 'Use light theme' },
-  { value: 'dark', label: 'Dark', ariaLabel: 'Use dark theme' },
-  { value: 'system', label: 'System', ariaLabel: 'Follow system theme' }
-] as const;
+import DeviceDesktop from '@tabler/icons/outline/device-desktop.svg';
+import Moon from '@tabler/icons/outline/moon.svg';
+import Sun from '@tabler/icons/outline/sun.svg';
+import { themeToggle } from '../starwind/theme-toggle/variants';
 ---
 
-<div class="theme-toggle" role="group" aria-label="Theme selection">
-  {options.map((option) => (
-    <button
-      type="button"
-      class="theme-toggle__button"
-      data-theme-choice={option.value}
-      aria-pressed="false"
-      aria-label={option.ariaLabel}
-      title={option.ariaLabel}
-    >
-      {option.label}
-    </button>
-  ))}
-</div>
+<button
+  class={themeToggle({ variant: 'outline', size: 'md', class: 'theme-toggle' })}
+  type="button"
+  data-theme-toggle
+  data-slot="theme-toggle"
+>
+  <span class="sr-only" data-theme-toggle-text>切换主题</span>
+  <Moon data-theme-icon="moon" aria-hidden="true" />
+  <DeviceDesktop data-theme-icon="display" aria-hidden="true" data-icon-hidden />
+  <Sun data-theme-icon="sun" aria-hidden="true" data-icon-hidden />
+</button>
+
+<script>
+  type Theme = 'light' | 'dark' | 'system';
+
+  const storageKey = 'readlabx-theme';
+  const root = document.documentElement;
+  const media = window.matchMedia('(prefers-color-scheme: dark)');
+  const labels: Record<Theme, string> = { light: '亮色', dark: '暗色', system: '跟随系统' };
+  const nextTheme: Record<Theme, Theme> = { light: 'dark', dark: 'system', system: 'light' };
+
+  const getTheme = (): Theme => {
+    const preference = root.dataset.themePreference;
+    return preference === 'light' || preference === 'dark' || preference === 'system' ? preference : 'system';
+  };
+
+  const applyTheme = (preference: Theme) => {
+    const resolvedTheme = preference === 'system' ? (media.matches ? 'dark' : 'light') : preference;
+    root.dataset.theme = resolvedTheme;
+    root.dataset.themePreference = preference;
+    root.classList.toggle('dark', resolvedTheme === 'dark');
+    root.style.colorScheme = resolvedTheme;
+  };
+
+  const syncToggle = (button: HTMLButtonElement) => {
+    const current = getTheme();
+    const target = nextTheme[current];
+    const label = `当前${labels[current]}，点击切换到${labels[target]}`;
+    const currentIcon = current === 'dark' ? 'moon' : current === 'system' ? 'display' : 'sun';
+
+    button.setAttribute('aria-label', label);
+    button.title = label;
+    button.querySelectorAll<SVGElement>('[data-theme-icon]').forEach((icon) => {
+      icon.toggleAttribute('data-icon-hidden', icon.dataset.themeIcon !== currentIcon);
+    });
+  };
+
+  document.querySelectorAll('[data-theme-toggle]').forEach((node) => {
+    if (!(node instanceof HTMLButtonElement)) return;
+
+    syncToggle(node);
+    node.addEventListener('click', () => {
+      const theme = nextTheme[getTheme()];
+      try {
+        window.localStorage.setItem(storageKey, theme);
+      } catch {}
+      applyTheme(theme);
+      syncToggle(node);
+    });
+  });
+
+  const syncSystemTheme = () => {
+    if (getTheme() === 'system') applyTheme('system');
+  };
+
+  media.addEventListener('change', syncSystemTheme);
+</script>

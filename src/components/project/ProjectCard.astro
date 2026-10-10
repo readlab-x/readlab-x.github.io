@@ -1,5 +1,7 @@
 ---
 import type { ProjectCardData } from '../../data/projects';
+import Badge from '../starwind/badge/Badge.astro';
+import Card from '../starwind/card/Card.astro';
 
 interface Props {
   project: ProjectCardData;
@@ -8,18 +10,25 @@ interface Props {
 const { project } = Astro.props as Props;
 ---
 
-<article class="project-card" id={project.slug} data-project-slug={project.slug}>
+<Card size="md" class="project-card" id={project.slug} data-project-slug={project.slug}>
   <a class="project-card__link" href={project.href} aria-label={project.title}>
+    <img
+      class="project-card__preview"
+      src={`/projects/${project.slug}-preview.png`}
+      alt={`${project.title} 页面截图`}
+      loading="lazy"
+      decoding="async"
+    />
     <div class="project-card__meta">
-      <span>{project.status}</span>
       <span>{project.year}</span>
+      <Badge variant="secondary">{project.status}</Badge>
     </div>
-    <h3 class="project-card__title">{project.title}</h3>
-    <p class="project-card__copy">{project.summary}</p>
-    <ul class="project-card__tags" aria-label={`${project.title} tags`}>
-      {project.tags.map((tag) => (
-        <li>{tag}</li>
-      ))}
-    </ul>
+    <div class="project-card__content">
+      <h3 class="project-card__title">{project.title}</h3>
+      <ul class="project-card__tags" aria-label={`${project.title} tags`}>
+        {project.tags.map((tag) => <li>{tag}</li>)}
+      </ul>
+    </div>
+    <span class="project-card__arrow" aria-hidden="true">↗</span>
   </a>
-</article>
+</Card>

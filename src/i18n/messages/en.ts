@@ -58,7 +58,6 @@ export type HomeMessages = {
   footer: {
     eyebrow: string;
     title: string;
-    copy: string;
     navTitle: string;
     contactTitle: string;
     contactLabel: string;
@@ -202,8 +201,6 @@ export const enHomeMessages: HomeMessages = {
   footer: {
     eyebrow: 'ReadLab X',
     title: 'A quiet place for serious reading.',
-    copy:
-      'ReadLab X keeps the site focused on content, structure, and long-form thinking.',
     navTitle: 'Explore',
     contactTitle: 'Contact',
     contactLabel: 'Contact us',

@@ -81,7 +81,6 @@ export const zhCNHomeMessages: HomeMessages = {
   footer: {
     eyebrow: 'ReadLab X',
     title: '给认真阅读的人留出安静空间。',
-    copy: '官网只保留必要的信息、项目入口和联系路径。',
     navTitle: '浏览',
     contactTitle: '联系',
     contactLabel: '联系我们',
